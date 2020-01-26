@@ -7,6 +7,10 @@
 #include "Motor.h"
 #include "PixelController.h"
 
+#define MAX_CMD_CHARS 64
+#define MAX_CMD_PARAMS 4
+#define MAX_PARAM_CHARS 16
+
 Periph::AnalogIn batVolt(Pins::BATTERY_VOLTAGE);
 Periph::Output laser(Pins::LASER);
 Periph::Motor motorL(Pins::LMOTOR_DIR, Pins::LMOTOR_PWM);
@@ -17,7 +21,7 @@ Adafruit_NeoPixel neopixels(4, Pins::LEDS);
 Pixel::PixelController pixels;
 
 void tryProcessCommand(char*);
-void notifyCommandTooLong();
+int splitCmd(char*, char*, char**);
 
 void setup() {
     servoH.attach(Pins::SERVO_HOR);
@@ -27,16 +31,27 @@ void setup() {
 }
 
 void loop() {
-    static char command[64] = {};
+    static char command[MAX_CMD_CHARS] = {};
     static int cmdCharCnt = 0;
 
     if(Serial.available())
     {
         char ch = Serial.read();
-        if(ch == '\n')
+        command[cmdCharCnt++] = (ch == '\n' ? '\0' : ch);
+        if(cmdCharCnt > MAX_CMD_CHARS)
         {
-            command[cmdCharCnt++] = '\0';
-            tryProcessCommand(command);
+            cmdCharCnt = 0;
+            Serial.println(F("ERR:CMDTOOLONG"));
+        }
+        else
+        {
+            if(ch == '\n')
+            {
+                char onlyCmd[MAX_CMD_CHARS] = {};
+                char params[MAX_CMD_PARAMS][MAX_PARAM_CHARS] = {};
+                int paramCnt = splitCmd(command, onlyCmd, (char**)params);
+            }
+                tryProcessCommand(command);
         }
     }
 
@@ -47,7 +62,20 @@ void tryProcessCommand(char* cmd)
 
 }
 
-void notifyCommandTooLong()
+int splitCmd(char* str, char* cmd, char** params)
 {
-
+    int idx;
+    int paramsCnt = 0;
+    for(idx = 0; idx < MAX_CMD_CHARS; idx++)
+    {
+        char ch = str[idx];
+        if(ch= '\0' && ch != ':')
+        {
+            // TODO
+        }
+        else
+        {
+            break;
+        }
+    }
 }
