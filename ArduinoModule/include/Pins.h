@@ -5,9 +5,9 @@
 
 namespace Pins
 {
-    const byte LMOTOR_DIR = 4;
+    const byte LMOTOR_DIR = 3;
     const byte LMOTOR_PWM = 5;
-    const byte RMOTOR_DIR = 7;
+    const byte RMOTOR_DIR = 4;
     const byte RMOTOR_PWM = 6;
     const byte SERVO_HOR = 10;
     const byte SERVO_VER = 9;

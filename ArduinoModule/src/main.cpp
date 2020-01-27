@@ -17,8 +17,8 @@
 
 Periph::AnalogIn batVolt(Pins::BATTERY_VOLTAGE);
 Periph::Output laser(Pins::LASER);
-Periph::Motor motorL(Pins::LMOTOR_DIR, Pins::LMOTOR_PWM);
-Periph::Motor motorR(Pins::RMOTOR_DIR, Pins::RMOTOR_PWM);
+Periph::Motor motorL(Pins::LMOTOR_DIR, Pins::LMOTOR_PWM, true);
+Periph::Motor motorR(Pins::RMOTOR_DIR, Pins::RMOTOR_PWM, true);
 Adafruit_TiCoServo servoH;
 Adafruit_TiCoServo servoV;
 Adafruit_NeoPixel pixels(4, Pins::LEDS);
@@ -34,7 +34,11 @@ void processSetLight(char*, int*, int);
 void setup() {
     servoH.attach(Pins::SERVO_HOR);
     servoV.attach(Pins::SERVO_VER);
+    servoH.write(90);
+    servoV.write(90);
     pixels.begin();
+    pixels.clear();
+    pixels.show();
     Serial.begin(115200);
 }
 
