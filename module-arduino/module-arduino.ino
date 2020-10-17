@@ -115,7 +115,7 @@ void processCommand(char* str, int* paramIdx, int paramCnt)
 void processGetVoltage(char* params, int* paramIdx, int paramCnt)
 {
     char answer[MAX_CMD_CHARS] = {};
-    snprintf(answer, MAX_CMD_CHARS, "GETVOLTAGE:%d", (int)(batVolt.getValue() * 4.96));
+    snprintf(answer, MAX_CMD_CHARS, "GETVOLTAGE:%d", (int)(batVolt.getValue() * 4.9));
     Serial.println(answer);
 }
 
