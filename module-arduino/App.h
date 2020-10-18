@@ -20,6 +20,7 @@ private:
     void ProcessCommand(Command* command);
     void ProcessGetVoltage();
     void ProcessSetLight(byte* data, int byteCount);
+    void ProcessSetMotors(byte* data, int byteCount);
     void ProcessUnknownCommand(CommandType unknownType);
     MotorController* _motorController;
     NeoPixelController* _neoPixels;

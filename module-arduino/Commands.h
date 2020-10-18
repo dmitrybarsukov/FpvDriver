@@ -20,12 +20,4 @@ typedef struct
     int dataByteCount;
 } Command;
 
-#pragma pack(push, 1)
-// typedef struct
-// {
-
-// };
-#pragma pack(pop)
-
-
 #endif // _COMMANDS_H

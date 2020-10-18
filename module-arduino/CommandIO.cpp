@@ -13,8 +13,9 @@ boolean CommandIO::TryReadCommand(Command* command)
         if(cmdByteCount > MAX_CMD_BYTES)
         {
             cmdByteCount = 0;
-            InitCommand(command, CommandType::ERROR_TOO_MANY_BYTES);
-            return true;
+            SendResponse(CommandType::ERROR_TOO_MANY_BYTES);
+            InitCommand(command, CommandType::NONE);
+            return false;
         }
     }
 
