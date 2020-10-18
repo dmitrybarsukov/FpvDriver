@@ -3,17 +3,17 @@
 #ifndef _PINS_H
 #define _PINS_H
 
-namespace Pins
+enum Pins : byte
 {
-    const byte LMOTOR_DIR = 3;
-    const byte LMOTOR_PWM = 5;
-    const byte RMOTOR_DIR = 4;
-    const byte RMOTOR_PWM = 6;
-    const byte SERVO_HOR = 10;
-    const byte SERVO_VER = 9;
-    const byte LEDS = 8;
-    const byte LASER = 7;
-    const byte BATTERY_VOLTAGE = A0;
-}
+    MOTOR1_DIRECTION = 3,
+    MOTOR1_PWM = 5,
+    MOTOR2_DIRECTION = 4,
+    MOTOR2_PWM = 6,
+    SERVO1 = 9,
+    SERVO2 = 10,
+    NEOPIXELS = 8,
+    LASER = 7,
+    BATTERY_VOLTAGE_SENSE = A0
+};
 
 #endif // _PINS_H
