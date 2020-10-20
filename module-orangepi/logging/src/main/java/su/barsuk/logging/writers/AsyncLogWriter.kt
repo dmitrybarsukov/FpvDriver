@@ -15,6 +15,7 @@ class AsyncLogWriter(
     private var isRunning: Boolean = true
 
     init {
+        thread.isDaemon = true
         thread.start()
     }
 

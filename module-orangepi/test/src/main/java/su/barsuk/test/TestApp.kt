@@ -21,4 +21,5 @@ fun main(args: Array<String>) {
     Log.writer = makeLogWriter("", "TestApp")
     Log.level = LogLevel.ALL
     // Here will be quick tests
+    Log.finalizeLogs()
 }

@@ -1,7 +1,6 @@
 package su.barsuk.logging
 
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 object Log {
     var level: LogLevel = LogLevel.ALL
