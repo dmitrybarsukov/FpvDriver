@@ -1,7 +1,7 @@
 #include "MotorController.h"
 
-#define SPEED_UPDATE_PERIOD_MILLIS 10
-#define SPEED_UPDATE_STEP_PER_PERIOD 1
+#define SPEED_UPDATE_PERIOD_MILLIS 5
+#define SPEED_UPDATE_STEP_PER_PERIOD 10
 
 MotorController::MotorController(Motor* left, Motor* right, unsigned long switchOffMillis)
 {
