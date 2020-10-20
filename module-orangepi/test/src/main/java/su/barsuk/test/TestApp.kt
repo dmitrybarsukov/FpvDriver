@@ -1,16 +1,24 @@
 package su.barsuk.test
 
-import su.barsuk.logging.*
-import java.io.InvalidClassException
+import su.barsuk.logging.Log
+import su.barsuk.logging.LogLevel
+import su.barsuk.logging.LogWriter
+import su.barsuk.logging.writers.AsyncLogWriter
+import su.barsuk.logging.writers.BufferedFileLogWriter
+import su.barsuk.logging.writers.ConsoleLogWriter
+import su.barsuk.logging.writers.TeeLogWriter
+
+fun makeLogWriter(path: String, appName: String): LogWriter {
+    return TeeLogWriter(
+            ConsoleLogWriter(),
+            AsyncLogWriter(
+                    BufferedFileLogWriter(path, appName)
+            )
+    )
+}
 
 fun main(args: Array<String>) {
-    val path = ""
-    val appName = "TestApp"
-    Log.writer = TeeLogWriter(arrayOf(ConsoleLogWriter(), FileLogWriter(path, appName)))
-    //Log.level = LogLevel.INFO
-    Log.debug("some debug message")
-    Log.info("information message")
-    Log.warn("warning message")
-    Log.error("error message", InvalidClassException("Exception message"))
-    Log.fatal("FUCKING CRAZY ERROR")
+    Log.writer = makeLogWriter("", "TestApp")
+    Log.level = LogLevel.ALL
+    // Here will be quick tests
 }

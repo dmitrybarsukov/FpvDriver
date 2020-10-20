@@ -1,7 +1,6 @@
 package su.barsuk.logging
 
-import java.time.LocalDateTime
-
 interface LogWriter {
-    fun writeLog(dateTime: LocalDateTime, threadName: String, logLevel: String, message: String)
+    fun writeLog(logWriterItem: LogWriterItem)
+    fun finalizeLogs()
 }

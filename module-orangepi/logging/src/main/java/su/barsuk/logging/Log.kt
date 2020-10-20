@@ -24,14 +24,22 @@ class Log private constructor() {
 
         fun debug(message: String) = writeLog(LogLevel.DEBUG, message)
 
+        @Synchronized
+        fun finalizeLogs() {
+            writer?.finalizeLogs()
+        }
+
+        @Synchronized
         private fun writeLog(messageLogLevel: LogLevel, message: String) {
             if(level < messageLogLevel)
                 return
             writer?.writeLog(
-                    LocalDateTime.now(),
-                    Thread.currentThread().name,
-                    messageLogLevel.name,
-                    message
+                    LogWriterItem(
+                            LocalDateTime.now(),
+                            Thread.currentThread().name,
+                            messageLogLevel.name,
+                            message
+                    )
             )
         }
 

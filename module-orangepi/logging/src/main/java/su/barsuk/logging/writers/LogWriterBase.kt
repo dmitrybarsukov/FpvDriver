@@ -1,4 +1,6 @@
-package su.barsuk.logging
+package su.barsuk.logging.writers
+
+import su.barsuk.logging.LogWriter
 
 abstract class LogWriterBase : LogWriter {
     protected fun formatMessage(dateTime: String, threadName: String, logLevel: String, message: String): String {
