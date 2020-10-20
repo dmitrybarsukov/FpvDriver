@@ -3,13 +3,12 @@ package su.barsuk.common.threading
 import su.barsuk.common.events.Event2
 
 abstract class ThreadBase(
-        private val name: String,
+        val name: String,
         private val priority: ThreadPriority = ThreadPriority.NORMAL,
         private val isDaemon: Boolean = false
 ) {
-    val stateChanged = Event2<ThreadBase, ThreadState>()
-    val exception = Event2<ThreadBase, Exception>()
-    val uncaughtException = Event2<ThreadBase, Throwable>()
+    val eventStateChanged = Event2<ThreadBase, ThreadState>()
+    val eventException = Event2<ThreadBase, Exception>()
 
     private lateinit var thread: Thread
     private var isRunning: Boolean = true
@@ -23,7 +22,6 @@ abstract class ThreadBase(
         thread = Thread(::threadFunc, name)
         thread.priority = priority.value
         thread.isDaemon = isDaemon
-        thread.setUncaughtExceptionHandler { _, throwable -> uncaughtException.raise(this, throwable) }
         thread.start()
     }
 
@@ -50,9 +48,9 @@ abstract class ThreadBase(
         thread.interrupt()
     }
 
-    abstract fun onStart()
-    abstract fun onCycle()
-    abstract fun onFinish()
+    protected abstract fun onStart()
+    protected abstract fun onCycle()
+    protected abstract fun onFinish()
 
     private fun threadFunc() {
         while(isRunning) {
@@ -66,7 +64,7 @@ abstract class ThreadBase(
             }
             catch (ex: Exception) {
                 changeState(ThreadState.ERROR)
-                exception.raise(this, ex)
+                eventException.raise(this, ex)
             }
             finally {
                 changeState(ThreadState.STOPPING)
@@ -79,7 +77,7 @@ abstract class ThreadBase(
     private fun changeState(newState: ThreadState) {
         if(state != newState){
             state = newState
-            stateChanged.raise(this, state)
+            eventStateChanged.raise(this, state)
         }
     }
 

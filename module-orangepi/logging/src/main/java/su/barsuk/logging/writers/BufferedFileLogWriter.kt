@@ -3,6 +3,7 @@ package su.barsuk.logging.writers
 import su.barsuk.logging.LogWriterItem
 import java.io.File
 import java.nio.file.Path
+import java.nio.file.Paths
 import java.util.*
 
 class BufferedFileLogWriter(
@@ -29,7 +30,7 @@ class BufferedFileLogWriter(
 
     private fun flushBuffer() {
         val fileName = "$appName-${dateTimeFileNameFormatter.format(messageBuffer.first.dateTime)}.log"
-        val filePath = Path.of(path, fileName).toUri()
+        val filePath = Paths.get(path, fileName).toUri()
 
         val text = messageBuffer.map {
             it.run {
