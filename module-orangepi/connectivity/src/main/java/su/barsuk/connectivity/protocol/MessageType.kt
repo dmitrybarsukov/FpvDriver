@@ -1,4 +1,4 @@
-package su.barsuk.arduinoconnector.protocol
+package su.barsuk.connectivity.protocol
 
 internal enum class MessageType(value: Int) {
     NONE(0x00),

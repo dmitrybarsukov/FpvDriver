@@ -1,4 +1,4 @@
-package su.barsuk.arduinoconnector.protocol
+package su.barsuk.connectivity.protocol
 
 internal object MessageCodec {
     fun encode(message: Message): ByteArray {

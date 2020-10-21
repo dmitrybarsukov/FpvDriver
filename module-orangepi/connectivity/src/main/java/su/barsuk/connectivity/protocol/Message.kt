@@ -1,4 +1,4 @@
-package su.barsuk.arduinoconnector.protocol
+package su.barsuk.connectivity.protocol
 
 import su.barsuk.common.extensions.toHexString
 

@@ -1,4 +1,4 @@
-package su.barsuk.arduinoconnector
+package su.barsuk.connectivity
 
 import jssc.SerialPort
 import jssc.SerialPortList

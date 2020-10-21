@@ -1,7 +1,7 @@
 package su.barsuk.test
 
-import su.barsuk.arduinoconnector.ArduinoController
-import su.barsuk.arduinoconnector.protocol.Color
+import su.barsuk.connectivity.ArduinoController
+import su.barsuk.connectivity.protocol.Color
 import su.barsuk.logging.Log
 import su.barsuk.logging.LogLevel
 import su.barsuk.logging.LogWriter

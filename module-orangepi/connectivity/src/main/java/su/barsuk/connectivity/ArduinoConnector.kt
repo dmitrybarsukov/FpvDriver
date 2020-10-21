@@ -1,11 +1,11 @@
-package su.barsuk.arduinoconnector
+package su.barsuk.connectivity
 
 import jssc.SerialPort
 import jssc.SerialPortException
-import su.barsuk.arduinoconnector.protocol.Message
-import su.barsuk.arduinoconnector.protocol.MessageCodec
-import su.barsuk.arduinoconnector.threads.SerialPortReceiverThread
-import su.barsuk.arduinoconnector.threads.SerialPortSenderThread
+import su.barsuk.connectivity.protocol.Message
+import su.barsuk.connectivity.protocol.MessageCodec
+import su.barsuk.connectivity.threads.SerialPortReceiverThread
+import su.barsuk.connectivity.threads.SerialPortSenderThread
 import su.barsuk.common.events.Event1
 import su.barsuk.common.events.Event2
 import su.barsuk.common.threading.ThreadBase

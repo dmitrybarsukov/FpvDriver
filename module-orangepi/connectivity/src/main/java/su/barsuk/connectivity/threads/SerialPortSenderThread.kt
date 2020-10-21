@@ -1,7 +1,7 @@
-package su.barsuk.arduinoconnector.threads
+package su.barsuk.connectivity.threads
 
 import jssc.SerialPortException
-import su.barsuk.arduinoconnector.SerialPortConnector
+import su.barsuk.connectivity.SerialPortConnector
 import su.barsuk.common.events.Event1
 import su.barsuk.common.threading.ThreadBase
 import java.util.concurrent.LinkedBlockingQueue

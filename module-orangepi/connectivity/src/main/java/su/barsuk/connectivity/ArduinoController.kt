@@ -1,9 +1,9 @@
-package su.barsuk.arduinoconnector
+package su.barsuk.connectivity
 
-import su.barsuk.arduinoconnector.protocol.Color
-import su.barsuk.arduinoconnector.protocol.Message
-import su.barsuk.arduinoconnector.protocol.MessageType
-import su.barsuk.arduinoconnector.protocol.PayloadCodec
+import su.barsuk.connectivity.protocol.Color
+import su.barsuk.connectivity.protocol.Message
+import su.barsuk.connectivity.protocol.MessageType
+import su.barsuk.connectivity.protocol.PayloadCodec
 import su.barsuk.common.events.Event2
 import su.barsuk.common.extensions.toHexString
 import su.barsuk.common.threading.ThreadBase
