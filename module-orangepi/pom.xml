@@ -11,7 +11,7 @@
         <module>logging</module>
         <module>test</module>
         <module>common</module>
-        <module>arduino-connector</module>
+        <module>connectivity</module>
     </modules>
     <packaging>pom</packaging>
 

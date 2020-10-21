@@ -26,7 +26,7 @@
 
         <dependency>
             <groupId>su.barsuk</groupId>
-            <artifactId>arduino-connector</artifactId>
+            <artifactId>connectivity</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
