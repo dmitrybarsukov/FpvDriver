@@ -34,7 +34,6 @@ fun main(args: Array<String>) {
     // Here will be quick tests
 
     val ports = ArduinoController.getPortNames()
-    Log.debug(ports.toString())
 
     Log.debug("Starting")
 

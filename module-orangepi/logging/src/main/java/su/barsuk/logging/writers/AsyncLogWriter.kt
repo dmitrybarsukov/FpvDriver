@@ -25,6 +25,7 @@ class AsyncLogWriter(
 
     override fun finalizeLogs() {
         isRunning = false
+        thread.join(5000)
     }
 
     private fun logWriterThreadFunc() {
