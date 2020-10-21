@@ -22,8 +22,8 @@ internal class SerialPortSenderThread(
         try {
             val bytes = byteArrayQueue.poll(1, TimeUnit.SECONDS)
             bytes?.run {
-                portContainer.port?.writeBytes(this)
-                // TODO implement protocol to allow continuous transmission
+                val packet = byteArrayOf(this.size.toByte(), *this)
+                portContainer.port?.writeBytes(packet)
             }
         }
         catch (ex: SerialPortException) {

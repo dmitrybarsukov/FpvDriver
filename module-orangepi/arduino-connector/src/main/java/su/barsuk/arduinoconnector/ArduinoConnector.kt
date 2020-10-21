@@ -2,16 +2,16 @@ package su.barsuk.arduinoconnector
 
 import jssc.SerialPort
 import jssc.SerialPortException
-import jssc.SerialPortList
-import su.barsuk.arduinoconnector.protocol.Command
-import su.barsuk.arduinoconnector.protocol.CommandCodec
+import su.barsuk.arduinoconnector.protocol.Message
+import su.barsuk.arduinoconnector.protocol.MessageCodec
 import su.barsuk.arduinoconnector.threads.SerialPortReceiverThread
 import su.barsuk.arduinoconnector.threads.SerialPortSenderThread
+import su.barsuk.common.events.Event1
 import su.barsuk.common.events.Event2
 import su.barsuk.common.threading.ThreadBase
 import su.barsuk.common.threading.ThreadState
 
-class ArduinoConnector(
+internal class ArduinoConnector(
         portName: String
 ) {
     private val portContainer = SerialPortConnector(portName, SerialPort.BAUDRATE_115200)
@@ -21,8 +21,8 @@ class ArduinoConnector(
 
     private var isRunning: Boolean? = null
 
-    val eventMessageReceived = Event2<ArduinoConnector, Command>()
-    val eventMessageNotDecoded = Event2<ArduinoConnector, ByteArray>()
+    val eventMessageReceived = Event1<Message>()
+    val eventMessageNotDecoded = Event1<ByteArray>()
     val eventThreadStateChanged = Event2<ThreadBase, ThreadState>()
     val eventThreadException = Event2<ThreadBase, Exception>()
 
@@ -54,8 +54,8 @@ class ArduinoConnector(
         portContainer.disconnect()
     }
 
-    fun sendCommand(command: Command) {
-        val bytes = CommandCodec.encode(command)
+    fun sendMessage(message: Message) {
+        val bytes = MessageCodec.encode(message)
         senderThread.sendByteArray(bytes)
     }
 
@@ -64,16 +64,10 @@ class ArduinoConnector(
     }
 
     private fun onBytesReceived(bytes: ByteArray) {
-        val command = CommandCodec.decode(bytes)
-        if(command != null)
-            eventMessageReceived.raise(this, command)
+        val message = MessageCodec.decode(bytes)
+        if(message != null)
+            eventMessageReceived.raise(message)
         else
-            eventMessageNotDecoded.raise(this, bytes)
-    }
-
-    companion object {
-        fun getPortNames(): Array<String> {
-            return SerialPortList.getPortNames()
-        }
+            eventMessageNotDecoded.raise(bytes)
     }
 }

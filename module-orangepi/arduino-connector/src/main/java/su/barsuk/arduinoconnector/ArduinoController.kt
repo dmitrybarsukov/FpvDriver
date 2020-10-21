@@ -1,25 +1,24 @@
 package su.barsuk.arduinoconnector
 
 import su.barsuk.arduinoconnector.protocol.Color
-import su.barsuk.arduinoconnector.protocol.Command
-import su.barsuk.arduinoconnector.protocol.CommandType
+import su.barsuk.arduinoconnector.protocol.Message
+import su.barsuk.arduinoconnector.protocol.MessageType
 import su.barsuk.arduinoconnector.protocol.PayloadCodec
 import su.barsuk.common.events.Event2
-import su.barsuk.common.extensions.putShort
+import su.barsuk.common.extensions.toHexString
 import su.barsuk.common.threading.ThreadBase
 import su.barsuk.common.threading.ThreadState
 
 class ArduinoController(
         portName: String
 ) {
-    var connector = ArduinoConnector(portName)
+    private val connector = ArduinoConnector(portName)
 
     val eventThreadStateChanged = Event2<ThreadBase, ThreadState>()
     val eventThreadException = Event2<ThreadBase, Exception>()
 
-    val eventOkMessageReceived = Event2<ArduinoController, CommandType>()
-    val eventErrorMessageReceived = Event2<ArduinoController, Command>()
-    val eventMessageNotDecoded = Event2<ArduinoController, ByteArray>()
+    val eventOkReceived = Event2<ArduinoController, String>()
+    val eventErrorReceived = Event2<ArduinoController, String>()
 
     val eventGetVoltageReceived = Event2<ArduinoController, Int>()
 
@@ -27,67 +26,82 @@ class ArduinoController(
         connector.eventThreadStateChanged += { th, st -> eventThreadStateChanged.raise(th, st) }
         connector.eventThreadException += { th, ex -> eventThreadException.raise(th, ex) }
         connector.eventMessageReceived += this::onMessageReceived
-        connector.eventMessageNotDecoded += { _, dt -> eventMessageNotDecoded.raise(this, dt) }
+        connector.eventMessageNotDecoded += this::onMessageNotDecoded
     }
 
     fun start() = connector.start()
     fun stop() = connector.stop()
 
-    fun getVoltageAsync() {
-        val command = Command(CommandType.GET_VOLTAGE)
-        connector.sendCommand(command)
+    fun getVoltage() {
+        val message = Message(MessageType.GET_VOLTAGE)
+        connector.sendMessage(message)
     }
 
-    fun stopMotorsAsync() {
-        val command = Command(CommandType.SET_MOTORS)
-        connector.sendCommand(command)
+    fun stopMotors() {
+        val message = Message(MessageType.SET_MOTORS)
+        connector.sendMessage(message)
     }
 
-    fun setMotorsAsync(left: Int, right: Int) {
+    fun setMotors(left: Int, right: Int) {
         val data = PayloadCodec.makeSetMotorsPayload(left, right)
-        val command = Command(CommandType.SET_MOTORS, data)
-        connector.sendCommand(command)
+        val message = Message(MessageType.SET_MOTORS, data)
+        connector.sendMessage(message)
     }
 
-    fun setLightsOffAsync() {
-        val command = Command(CommandType.SET_LIGHT)
-        connector.sendCommand(command)
+    fun setLightsOff() {
+        val message = Message(MessageType.SET_LIGHT)
+        connector.sendMessage(message)
     }
 
-    fun setLightsAsync(color: Color) {
+    fun setLights(color: Color) {
         val data = PayloadCodec.makeSetLightsPayload(color)
-        val command = Command(CommandType.SET_LIGHT, data)
-        connector.sendCommand(command)
+        val message = Message(MessageType.SET_LIGHT, data)
+        connector.sendMessage(message)
     }
 
-    fun setLightsMultipleAsync(vararg colors: Color) {
+    fun setLightsMultiple(vararg colors: Color) {
         val data = PayloadCodec.makeSetLightsPayloadMultiple(*colors)
-        val command = Command(CommandType.SET_LIGHT, data)
-        connector.sendCommand(command)
+        val message = Message(MessageType.SET_LIGHT, data)
+        connector.sendMessage(message)
     }
 
-    private fun onMessageReceived(connector: ArduinoConnector, command: Command) {
-        when(command.commandType) {
-            CommandType.OK -> processOkMessage(command)
-            CommandType.GET_VOLTAGE -> processGetVoltage(command)
-            else -> processOtherMessage(command)
+    private fun onMessageReceived(message: Message) {
+        when(message.messageType) {
+            MessageType.OK -> processOkMessage(message)
+            MessageType.GET_VOLTAGE -> processGetVoltage(message)
+            else -> processOtherMessage(message)
         }
     }
 
-    private fun processOkMessage(command: Command) {
-        val okCommandType = CommandType.getByByteValueOrNull(command.data.firstOrNull()) ?: CommandType.NONE
-        eventOkMessageReceived.raise(this, okCommandType)
+    private fun processOkMessage(message: Message) {
+        val okMessageType = MessageType.getByByteValueOrNull(message.data.firstOrNull())
+        val okMessage = "OK: $okMessageType"
+        eventOkReceived.raise(this, okMessage)
     }
 
-    private fun processGetVoltage(command: Command) {
-        if(command.data.size == 2) {
-            eventGetVoltageReceived.raise(this, PayloadCodec.getVoltageFromPayload(command.data))
+    private fun processGetVoltage(message: Message) {
+        if(message.data.size == 2) {
+            val voltage = PayloadCodec.getVoltageFromPayload(message.data)
+            eventGetVoltageReceived.raise(this, voltage)
         } else {
-            eventErrorMessageReceived.raise(this, command)
+            val errorMessage = "${MessageType.GET_VOLTAGE} wrong payload: [${message.data.toHexString()}]"
+            eventErrorReceived.raise(this, errorMessage)
         }
     }
 
-    private fun processOtherMessage(command: Command) {
-        eventErrorMessageReceived.raise(this, command)
+    private fun processOtherMessage(message: Message) {
+        val errorMessage = "Error: $message"
+        eventErrorReceived.raise(this, errorMessage)
+    }
+
+    private fun onMessageNotDecoded(data: ByteArray) {
+        val errorMessage = "Not decoded: [${data.toHexString()}]"
+        eventErrorReceived.raise(this, errorMessage)
+    }
+
+    companion object {
+        fun getPortNames(): Array<String> {
+            return SerialPortConnector.getPortNames()
+        }
     }
 }

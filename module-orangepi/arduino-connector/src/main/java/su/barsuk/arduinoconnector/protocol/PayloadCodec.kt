@@ -1,14 +1,11 @@
 package su.barsuk.arduinoconnector.protocol
 
+import su.barsuk.common.extensions.constrain
 import su.barsuk.common.extensions.putShort
 import su.barsuk.common.extensions.readShort
-import kotlin.math.*
 
-private fun Int.constrain(minimum: Int, maximum: Int): Int {
-    return min(max(this, minimum), maximum)
-}
 
-object PayloadCodec {
+internal object PayloadCodec {
     fun getVoltageFromPayload(payload: ByteArray): Int {
         return payload.readShort(0).toInt()
     }
@@ -31,6 +28,4 @@ object PayloadCodec {
     }
 
     fun makeSetLightsPayload(color: Color) = makeSetLightsPayloadMultiple(color)
-
-
 }

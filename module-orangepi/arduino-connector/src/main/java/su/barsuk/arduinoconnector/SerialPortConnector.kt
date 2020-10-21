@@ -1,6 +1,7 @@
 package su.barsuk.arduinoconnector
 
 import jssc.SerialPort
+import jssc.SerialPortList
 
 internal class SerialPortConnector(
         private val portName: String,
@@ -22,5 +23,11 @@ internal class SerialPortConnector(
     fun disconnect() {
         port?.closePort()
         port = null
+    }
+
+    companion object {
+        fun getPortNames(): Array<String> {
+            return SerialPortList.getPortNames()
+        }
     }
 }

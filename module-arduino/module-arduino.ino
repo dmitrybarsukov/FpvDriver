@@ -8,7 +8,7 @@
 #include "NeoPixelController.h"
 
 #define BAUDRATE 115200
-#define SWITCH_OFF_TIMEOUT 15000
+#define SWITCH_OFF_TIMEOUT 10000
 
 App* app;
 

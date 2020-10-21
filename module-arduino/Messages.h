@@ -10,7 +10,8 @@ typedef enum : byte
     SET_LIGHT = 0xC2,
     ERROR_TOO_MANY_BYTES = 0xE0,
     ERROR_MESSAGE_INVALID = 0xE1,
-    ERROR_PARAMS_INVALID = 0xE2
+    ERROR_PARAMS_INVALID = 0xE2,
+    ERROR_PACKET_TIMEOUT = 0xE3
 } MessageType;
 
 typedef struct

@@ -8,10 +8,8 @@ import su.barsuk.common.threading.ThreadBase
 
 internal class SerialPortReceiverThread(
         private val portContainer: SerialPortConnector,
-        private val receiveTimeoutMillis: Int = 10
+        private val receiveTimeoutMillis: Int = 1000
 ) : ThreadBase(SerialPortReceiverThread::class.simpleName!!) {
-    private val receiveBuffer = ArrayList<Byte>()
-
     val eventBytesReceived = Event1<ByteArray>()
     val eventPortException = Event1<SerialPortException>()
 
@@ -19,18 +17,17 @@ internal class SerialPortReceiverThread(
 
     override fun onCycle() {
         try {
-            val byte = portContainer.port?.readBytes(1, receiveTimeoutMillis)?.first()
-            // TODO implement protocol to allow continuous transmission
-            if(byte != null)
-                receiveBuffer.add(byte)
-        } catch (_: SerialPortTimeoutException) {
-            if(receiveBuffer.isEmpty())
+            val port = portContainer.port
+            if(port == null) {
+                Thread.sleep(receiveTimeoutMillis.toLong())
                 return
-            val bytes = receiveBuffer.toByteArray()
-            receiveBuffer.clear()
+            }
+            val bytesToRead = port.readBytes(1, receiveTimeoutMillis).first().toInt()
+            val bytes = port.readBytes(bytesToRead, receiveTimeoutMillis)
             eventBytesReceived.raise(bytes)
+        } catch (_: SerialPortTimeoutException) {
+            // Do nothing
         } catch (ex: SerialPortException) {
-            receiveBuffer.clear()
             eventPortException.raise(ex)
         }
     }

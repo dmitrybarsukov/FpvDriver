@@ -1,29 +1,44 @@
 #include "MessageIO.h"
 
-#define PACKET_TIMEOUT 10 // millis
+MessageIO::MessageIO()
+{
+    ClearBuffer();
+}
 
 boolean MessageIO::TryReadMessage(Message* message)
 {
     auto now = millis();
     if(Serial.available())
     {
-        lastByteTime = now;
         byte b = Serial.read();
-        packetBuffer[bufferByteCount++] = b;
-        if(bufferByteCount > MAX_PACKET_BYTES)
+        lastByteTime = now;
+        if(expectedBufferLength == NO_BUFFER)
         {
-            bufferByteCount = 0;
-            SendMessage(MessageType::ERROR_TOO_MANY_BYTES);
-            InitMessage(message, MessageType::NONE);
-            return false;
+            expectedBufferLength = b;
+        }
+        else
+        {
+            packetBuffer[bufferByteCount++] = b;
+            if(bufferByteCount == expectedBufferLength)
+            {
+                InitMessage(message, (MessageType)packetBuffer[0], &packetBuffer[1], bufferByteCount - 1);
+                ClearBuffer();
+                return true;
+            }
+            else if(bufferByteCount >= MAX_PACKET_BYTES)
+            {
+                ClearBuffer();
+                SendMessage(MessageType::ERROR_TOO_MANY_BYTES);
+                InitMessage(message, MessageType::NONE);
+                return false;
+            }
         }
     }
 
-    if(now - lastByteTime > PACKET_TIMEOUT && bufferByteCount > 0)
+    if(now - lastByteTime > PACKET_TIMEOUT && expectedBufferLength != NO_BUFFER)
     {
-        InitMessage(message, (MessageType)packetBuffer[0], packetBuffer + 1, bufferByteCount - 1);
-        bufferByteCount = 0;
-        return true;
+        ClearBuffer();
+        SendMessage(MessageType::ERROR_PACKET_TIMEOUT);
     }
 
     InitMessage(message, MessageType::NONE);
@@ -43,4 +58,10 @@ void MessageIO::InitMessage(Message* message, MessageType type, byte* data, int 
     message->messageType = type;
     message->data = data;
     message->dataByteCount = byteCount;
+}
+
+void MessageIO::ClearBuffer()
+{
+    expectedBufferLength = NO_BUFFER;
+    bufferByteCount = 0;
 }
