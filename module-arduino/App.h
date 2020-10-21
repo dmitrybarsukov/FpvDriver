@@ -3,7 +3,7 @@
 
 #include "MotorController.h"
 #include "VoltageSensor.h"
-#include "CommandIO.h"
+#include "MessageIO.h"
 #include "NeoPixelController.h"
 
 class App
@@ -17,17 +17,17 @@ public:
     void Preprocess();
     void Process();
 private:
-    void ProcessCommand(Command* command);
+    void ProcessMessage(Message* message);
     void ProcessGetVoltage();
     void ProcessSetLight(byte* data, int byteCount);
     void ProcessSetMotors(byte* data, int byteCount);
-    void ProcessUnknownCommand(CommandType unknownType);
+    void ProcessUnknownMessage(MessageType unknownType);
     MotorController* _motorController;
     NeoPixelController* _neoPixels;
     VoltageSensor* _batteryVoltageSensor;
-    CommandIO* _commandIO;
-    Command _response;
-    Command* _pResponse;
+    MessageIO* _messageIO;
+    Message _message;
+    Message* _pMessage;
 };
 
 #endif // _APP_H

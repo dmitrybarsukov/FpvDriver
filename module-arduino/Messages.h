@@ -1,5 +1,5 @@
-#ifndef _COMMANDS_H
-#define _COMMANDS_H
+#ifndef _MESSAGES_H
+#define _MESSAGES_H
 
 typedef enum : byte
 {
@@ -9,15 +9,15 @@ typedef enum : byte
     SET_MOTORS = 0xC1,
     SET_LIGHT = 0xC2,
     ERROR_TOO_MANY_BYTES = 0xE0,
-    ERROR_COMMAND_INVALID = 0xE1,
+    ERROR_MESSAGE_INVALID = 0xE1,
     ERROR_PARAMS_INVALID = 0xE2
-} CommandType;
+} MessageType;
 
 typedef struct
 {
-    CommandType commandType;
+    MessageType messageType;
     byte* data;
     int dataByteCount;
-} Command;
+} Message;
 
-#endif // _COMMANDS_H
+#endif // _MESSAGES_H
