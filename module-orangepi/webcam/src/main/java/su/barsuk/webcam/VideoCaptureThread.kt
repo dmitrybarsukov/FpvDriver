@@ -1,6 +1,7 @@
 package su.barsuk.webcam
 
 import org.bytedeco.javacv.FFmpegFrameRecorder
+import org.bytedeco.javacv.FrameGrabber
 import org.bytedeco.javacv.OpenCVFrameGrabber
 import su.barsuk.common.events.Event2
 import su.barsuk.common.threading.ThreadBase
@@ -17,7 +18,11 @@ class VideoCaptureThread(
 
     override fun onStart() {
         stream = makeNewStream()
-        grabber = OpenCVFrameGrabber(cameraDeviceNumber)
+        grabber = OpenCVFrameGrabber(cameraDeviceNumber).apply {
+            imageWidth = config.width
+            imageHeight = config.height
+            imageMode = if(config.isColor) FrameGrabber.ImageMode.COLOR else FrameGrabber.ImageMode.GRAY
+        }
         grabber.start()
         val image = grabber.grab()
         recorder = FFmpegFrameRecorder(
@@ -25,12 +30,11 @@ class VideoCaptureThread(
                 image.imageWidth,
                 image.imageHeight
         ).apply {
-            format = "mpegts"
+            format = config.format
             videoCodec = config.codec
             pixelFormat = config.pixelFormat
             videoBitrate = config.bitrate
-            frameRate = grabber.frameRate
-            gopSize = 10
+            gopSize = config.gopSize
         }
         recorder.start()
     }
