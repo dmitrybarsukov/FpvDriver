@@ -6,15 +6,15 @@ class Event3<T1, T2, T3> {
     private val subscribers = mutableListOf<Subscriber3<T1, T2, T3>>()
 
     @Synchronized
-    fun subscribe(Subscriber3: Subscriber3<T1, T2, T3>) {
-        if(!subscribers.contains(Subscriber3))
-            subscribers.add(Subscriber3)
+    fun subscribe(subscriber: Subscriber3<T1, T2, T3>) {
+        if(!subscribers.contains(subscriber))
+            subscribers.add(subscriber)
     }
 
     @Synchronized
-    fun unsubscribe(Subscriber3: Subscriber3<T1, T2, T3>) {
-        if(subscribers.contains(Subscriber3))
-            subscribers.remove(Subscriber3)
+    fun unsubscribe(subscriber: Subscriber3<T1, T2, T3>) {
+        if(subscribers.contains(subscriber))
+            subscribers.remove(subscriber)
     }
 
     @Synchronized
@@ -29,7 +29,7 @@ class Event3<T1, T2, T3> {
         subscribers.clear()
     }
 
-    operator fun plusAssign(Subscriber3: Subscriber3<T1, T2, T3>) = subscribe(Subscriber3)
-    operator fun minusAssign(Subscriber3: Subscriber3<T1, T2, T3>) = unsubscribe(Subscriber3)
+    operator fun plusAssign(subscriber: Subscriber3<T1, T2, T3>) = subscribe(subscriber)
+    operator fun minusAssign(subscriber: Subscriber3<T1, T2, T3>) = unsubscribe(subscriber)
     operator fun invoke(arg1: T1, arg2: T2, arg3: T3) = raise(arg1, arg2, arg3)
 }
