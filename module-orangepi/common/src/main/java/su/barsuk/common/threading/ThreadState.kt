@@ -6,5 +6,6 @@ enum class ThreadState {
     RUNNING,
     ERROR,
     STOPPING,
-    STOPPED
+    DISPOSING,
+    DISPOSED
 }

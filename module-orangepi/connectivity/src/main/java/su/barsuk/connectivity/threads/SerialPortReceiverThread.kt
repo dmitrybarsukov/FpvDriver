@@ -34,4 +34,8 @@ internal class SerialPortReceiverThread(
 
     override fun onFinish() {}
 
+    override fun onDispose() {
+        eventBytesReceived.dispose()
+        eventPortException.dispose()
+    }
 }

@@ -4,6 +4,7 @@ import su.barsuk.common.events.Event2
 
 abstract class ThreadBase(
         val name: String,
+        private val timeoutOnFail: Long = 1000,
         private val priority: ThreadPriority = ThreadPriority.NORMAL,
         private val isDaemon: Boolean = false
 ) {
@@ -51,9 +52,11 @@ abstract class ThreadBase(
     protected abstract fun onStart()
     protected abstract fun onCycle()
     protected abstract fun onFinish()
+    protected abstract fun onDispose()
 
     private fun threadFunc() {
         while(isRunning) {
+            var restarting = false
             changeState(ThreadState.STARTING)
             try {
                 onStart()
@@ -63,15 +66,36 @@ abstract class ThreadBase(
                 }
             }
             catch (ex: Exception) {
+                restarting = true
                 changeState(ThreadState.ERROR)
                 eventException.raise(this, ex)
             }
-            finally {
+
+            try {
                 changeState(ThreadState.STOPPING)
                 onFinish()
             }
+            catch (ex: Exception) {
+                restarting = true
+                changeState(ThreadState.ERROR)
+                eventException.raise(this, ex)
+            }
+
+            if(restarting)
+            {
+                Thread.sleep(timeoutOnFail)
+            }
         }
-        changeState(ThreadState.STOPPED)
+        changeState(ThreadState.DISPOSING)
+        try {
+            onDispose()
+        }
+        catch (ex: Exception) {
+            eventException.raise(this, ex)
+        }
+        changeState(ThreadState.DISPOSED)
+        eventException.dispose()
+        eventStateChanged.dispose()
     }
 
     private fun changeState(newState: ThreadState) {

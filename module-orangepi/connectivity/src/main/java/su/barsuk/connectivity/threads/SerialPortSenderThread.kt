@@ -33,4 +33,8 @@ internal class SerialPortSenderThread(
     }
 
     override fun onFinish() {}
+
+    override fun onDispose() {
+        eventPortException.dispose()
+    }
 }

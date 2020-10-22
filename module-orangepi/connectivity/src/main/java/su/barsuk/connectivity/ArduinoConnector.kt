@@ -47,6 +47,10 @@ internal class ArduinoConnector(
     fun stop() {
         if(isRunning == null)
             throw IllegalStateException("${ArduinoConnector::class.simpleName} was not started yet")
+        eventMessageReceived.dispose()
+        eventMessageNotDecoded.dispose()
+        eventThreadException.dispose()
+        eventThreadStateChanged.dispose()
         isRunning = false
         senderThread.stop()
         receiverThread.stop()
@@ -59,6 +63,7 @@ internal class ArduinoConnector(
         senderThread.sendByteArray(bytes)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun onPortException(ex: SerialPortException) {
         portContainer.reconnect()
     }
