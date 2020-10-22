@@ -24,6 +24,11 @@ class Event1<T1> {
         }
     }
 
+    @Synchronized
+    fun dispose() {
+        subscribers.clear()
+    }
+
     operator fun plusAssign(subscriber: Subscriber1<T1>) = subscribe(subscriber)
     operator fun minusAssign(subscriber: Subscriber1<T1>) = unsubscribe(subscriber)
     operator fun invoke(arg: T1) = raise(arg)
