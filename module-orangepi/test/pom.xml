@@ -78,6 +78,11 @@
                                         <include name="*.jar"/>
                                     </fileset>
                                 </copy>
+                                <copy todir="${project.build.directory}">
+                                    <fileset dir="scripts">
+                                        <include name="*.sh"/>
+                                    </fileset>
+                                </copy>
                             </target>
                         </configuration>
                         <goals>
