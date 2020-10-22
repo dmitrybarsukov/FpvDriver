@@ -12,6 +12,7 @@
         <module>test</module>
         <module>common</module>
         <module>connectivity</module>
+        <module>webcam</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -63,5 +64,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
