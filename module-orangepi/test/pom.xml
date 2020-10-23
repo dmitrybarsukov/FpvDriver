@@ -26,7 +26,7 @@
 
         <dependency>
             <groupId>su.barsuk</groupId>
-            <artifactId>connectivity</artifactId>
+            <artifactId>platform-control</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 

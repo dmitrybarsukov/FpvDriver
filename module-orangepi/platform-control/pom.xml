@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>connectivity</artifactId>
+    <artifactId>platform-control</artifactId>
 
     <dependencies>
         <dependency>

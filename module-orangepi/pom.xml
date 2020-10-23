@@ -11,7 +11,7 @@
         <module>logging</module>
         <module>test</module>
         <module>common</module>
-        <module>connectivity</module>
+        <module>platform-control</module>
         <module>webcam</module>
     </modules>
     <packaging>pom</packaging>
